@@ -1,95 +1,78 @@
 import { useState } from "react";
 import Background from "./components/Background";
 import Intro from "./pages/Intro";
-
+import PlayerSetup from "./pages/PlayerSetup";
 
 function App() {
 
+  const [screen, setScreen] = useState("home");
 
-const [screen,setScreen]=useState("home");
+  return (
 
+    <div className="app">
 
+      <Background />
 
-return (
+      {screen === "home" && (
 
-<div className="app">
+        <div className="content">
 
+          <h1>C ODYSSEY</h1>
 
-<Background />
+          <h2>Escape The Code Lab</h2>
 
+          <p>
+            The ultimate journey to master C programming.
+            <br />
+            Solve challenges. Unlock levels. Become a C Legend.
+          </p>
 
-{
+          <button onClick={() => setScreen("intro")}>
+            START JOURNEY
+          </button>
 
-screen==="home" &&
+        </div>
 
-<div className="content">
+      )}
 
+      {screen === "intro" && (
+        <Intro startGame={() => setScreen("player")} />
+      )}
 
-<h1>
-C ODYSSEY
-</h1>
+      {screen === "player" && (
+        <PlayerSetup startGame={() => setScreen("dashboard")} />
+      )}
 
+      {screen === "dashboard" && (
 
-<h2>
-Escape The Code Lab
-</h2>
+        <div className="content">
 
+          <h1>Welcome</h1>
 
-<p>
-The ultimate journey to master C programming.
-<br/>
-Solve challenges. Unlock levels. Become a C Legend.
-</p>
+          <h2>{localStorage.getItem("playerName")}</h2>
 
+          <p>
+            Level 1
+            <br />
+            XP : 0
+            <br />
+            Coins : 100
+            <br />
+            ❤️❤️❤️❤️❤️
+          </p>
 
-<button onClick={()=>setScreen("intro")}>
+          <button>
+            START LEVEL 1
+          </button>
 
-START JOURNEY
+        </div>
 
-</button>
+      )}
 
+    </div>
 
-</div>
-
-}
-
-
-
-{
-
-screen==="intro" &&
-
-<Intro startGame={()=>setScreen("game")}/>
-
-}
-
-
-{
-
-screen==="game" &&
-
-<div className="content">
-
-<h1>
-COMING SOON...
-</h1>
-
-<p>
-The Code Lab awaits.
-</p>
-
-</div>
+  );
 
 }
-
-
-
-</div>
-
-);
-
-
-}
-
 
 export default App;
