@@ -1,9 +1,12 @@
 import { useState } from "react";
+
 import Background from "./components/Background";
+
 import Intro from "./pages/Intro";
 import PlayerSetup from "./pages/PlayerSetup";
 import Dashboard from "./pages/Dashboard";
-import Quiz from "./pages/Quiz";
+
+import RockPaperScissors from "./games/RockPaperScissors";
 
 
 function App(){
@@ -22,15 +25,17 @@ return(
 
 <div className="content">
 
-<h1>C ODYSSEY</h1>
+<h1>
+C ODYSSEY
+</h1>
 
-<h2>Escape The Code Lab</h2>
+<h2>
+Escape The Code Lab
+</h2>
 
-<p>
-Master C programming through challenges.
-</p>
-
-<button onClick={()=>setScreen("intro")}>
+<button
+onClick={()=>setScreen("intro")}
+>
 START JOURNEY
 </button>
 
@@ -42,7 +47,9 @@ START JOURNEY
 
 {screen==="intro" &&
 
-<Intro startGame={()=>setScreen("player")}/>
+<Intro
+startGame={()=>setScreen("player")}
+/>
 
 }
 
@@ -50,7 +57,9 @@ START JOURNEY
 
 {screen==="player" &&
 
-<PlayerSetup startGame={()=>setScreen("dashboard")}/>
+<PlayerSetup
+startGame={()=>setScreen("dashboard")}
+/>
 
 }
 
@@ -58,17 +67,53 @@ START JOURNEY
 
 {screen==="dashboard" &&
 
-<Dashboard goToMap={()=>setScreen("quiz")}/>
+<Dashboard
+goToMap={()=>setScreen("game1")}
+/>
 
 }
 
 
 
-{screen==="quiz" &&
+{screen==="game1" &&
 
-<Quiz finishLevel={()=>alert("LEVEL COMPLETE 🎉")}/>
+<RockPaperScissors
+completeGame={()=>setScreen("quiz1")}
+/>
 
 }
+
+
+
+{screen==="quiz1" &&
+
+<div className="content">
+
+<h1>
+C CHALLENGE
+</h1>
+
+<h2>
+What keyword stores integer values?
+</h2>
+
+<button>
+int
+</button>
+
+<button>
+float
+</button>
+
+<button>
+char
+</button>
+
+
+</div>
+
+}
+
 
 
 </div>
@@ -76,5 +121,6 @@ START JOURNEY
 )
 
 }
+
 
 export default App;
