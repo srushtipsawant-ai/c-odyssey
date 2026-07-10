@@ -9,7 +9,7 @@ difficulty:"Easy"
 {
 id:"tictactoe",
 name:"Tic Tac Toe",
-difficulty:"Easy"
+difficulty:"Medium"
 },
 
 {
@@ -22,7 +22,37 @@ difficulty:"Easy"
 id:"guess",
 name:"Number Guess",
 difficulty:"Easy"
-}
+},
+
+
+{
+id:"reaction",
+name:"Reaction Timer",
+difficulty:"Easy"
+},
+
+
+
+{
+id:"numbertap",
+name:"Number Tap",
+difficulty:"Easy"
+},
+
+{
+id:"colormatch",
+name:"Color Match",
+difficulty:"Easy"
+},
+
+{
+id:"sequence",
+name:"Memory Sequence",
+difficulty:"Medium"
+},
+
+
+
 
 ];
 

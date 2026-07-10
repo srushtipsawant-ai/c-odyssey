@@ -5,42 +5,60 @@ function RockPaperScissors({completeGame}){
 
 
 const choices=[
+
 "🪨 Rock",
+
 "📄 Paper",
+
 "✂️ Scissors"
+
 ];
 
 
-const [result,setResult]=useState("");
 
-const [computer,setComputer]=useState("");
+const [playerScore,setPlayerScore]=useState(0);
+
+const [computerScore,setComputerScore]=useState(0);
+
+const [message,setMessage]=useState(
+"Choose your move"
+);
 
 
 
 function play(player){
 
 
+
 const cpu =
 choices[
-Math.floor(Math.random()*3)
+Math.floor(Math.random()*choices.length)
 ];
 
 
-setComputer(cpu);
+
+let p=playerScore;
+
+let c=computerScore;
 
 
 
 if(player===cpu){
 
-setResult("Draw 😐 Try Again");
+
+setMessage(
+`Draw! Computer chose ${cpu}`
+);
+
 
 return;
+
 
 }
 
 
 
-const win =
+let win =
 
 (player==="🪨 Rock" && cpu==="✂️ Scissors") ||
 
@@ -50,16 +68,21 @@ const win =
 
 
 
+
+
 if(win){
 
-setResult("You Win 🎉");
+
+p++;
 
 
-setTimeout(()=>{
+setPlayerScore(p);
 
-completeGame(true);
 
-},1200);
+setMessage(
+`You win round! Computer chose ${cpu}`
+);
+
 
 
 }
@@ -67,20 +90,59 @@ completeGame(true);
 else{
 
 
-setResult("Computer Wins ❌");
+c++;
+
+
+setComputerScore(c);
+
+
+setMessage(
+`You lose round! Computer chose ${cpu}`
+);
+
+
+}
+
+
+
+
+
+
+if(p===2){
 
 
 setTimeout(()=>{
 
+
+completeGame(true);
+
+
+},1000);
+
+
+}
+
+
+
+if(c===2){
+
+
+setTimeout(()=>{
+
+
 completeGame(false);
 
-},1200);
+
+},1000);
 
 
 }
 
 
+
+
 }
+
 
 
 
@@ -96,30 +158,30 @@ ROCK PAPER SCISSORS
 
 
 <h2>
-Computer: {computer}
+You: {playerScore} - {computerScore} : CPU
 </h2>
 
 
-<h2>
-{result}
-</h2>
+<h3>
+{message}
+</h3>
 
 
 
 {
 
-choices.map(choice=>(
+choices.map(c=>(
 
 
 <button
 
-key={choice}
+key={c}
 
-onClick={()=>play(choice)}
+onClick={()=>play(c)}
 
 >
 
-{choice}
+{c}
 
 </button>
 

@@ -4,19 +4,35 @@ import MemoryMatch from "./MemoryMatch";
 import NumberGuess from "./NumberGuess";
 
 
+import ReactionTimer from "./ReactionTimer";
+
+import NumberTap from "./NumberTap";
+import ColorMatch from "./ColorMatch";
+import MemorySequence from "./MemorySequence";
+
+
+
 const GameRegistry = {
 
 
 rock: RockPaperScissors,
 
-
 tictactoe: TicTacToe,
-
 
 memory: MemoryMatch,
 
+guess: NumberGuess,
 
-guess: NumberGuess
+
+reaction: ReactionTimer,
+
+
+
+numbertap: NumberTap,
+
+colormatch: ColorMatch,
+
+sequence: MemorySequence
 
 
 };

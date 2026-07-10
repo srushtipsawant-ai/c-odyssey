@@ -11,23 +11,102 @@ savePlayer
 } from "./player";
 
 
-function randomItem(array){
 
-return array[
-Math.floor(Math.random()*array.length)
+function randomItem(arr){
+
+return arr[
+Math.floor(Math.random()*arr.length)
 ];
 
 }
 
 
 
+
+
+function getQuestion(){
+
+
+let history = JSON.parse(
+
+localStorage.getItem("questionHistory")
+
+) || [];
+
+
+
+let available = questions.filter(
+
+q=>!history.includes(q.id)
+
+);
+
+
+
+
+
+if(available.length===0){
+
+
+history=[];
+
+
+available=[...questions];
+
+
+}
+
+
+
+let selected=randomItem(available);
+
+
+
+history.push(selected.id);
+
+
+
+localStorage.setItem(
+
+"questionHistory",
+
+JSON.stringify(history)
+
+);
+
+
+
+return selected;
+
+
+}
+
+
+
+
+
+
+
+
+
 function GameEngine(){
 
 
-const [player,setPlayer]=useState(getPlayer());
+
+const [player,setPlayer]=useState(
+getPlayer()
+);
 
 
-const [stage,setStage]=useState("game");
+
+const [stage,setStage]=useState(
+"game"
+);
+
+
+
+const [message,setMessage]=useState("");
+
 
 
 const [currentGame,setCurrentGame]=useState(
@@ -35,19 +114,28 @@ randomItem(games)
 );
 
 
+
 const [currentQuestion,setCurrentQuestion]=useState(
-randomItem(questions)
+()=>getQuestion()
 );
 
 
 
-function updatePlayer(updated){
 
-setPlayer(updated);
 
-savePlayer(updated);
+
+
+
+function updatePlayer(data){
+
+setPlayer(data);
+
+savePlayer(data);
 
 }
+
+
+
 
 
 
@@ -56,57 +144,51 @@ function completeGame(result){
 
 
 
-if(result===true){
+if(result){
 
+
+
+setMessage(
+"🎉 Game Completed"
+);
+
+
+
+setStage("result");
+
+
+
+setTimeout(()=>{
+
+
+setMessage("");
 
 setStage("question");
 
 
+},1200);
+
+
+
 }
+
+
 
 else{
 
 
+
 let updated={...player};
+
 
 
 updated.xp=Math.max(
+
 0,
+
 updated.xp-20
+
 );
-
-
-updatePlayer(updated);
-
-
-alert("Game Failed ❌ XP -20");
-
-
-setCurrentGame(
-randomItem(games)
-);
-
-
-}
-
-
-}
-
-
-
-
-
-function nextLevel(){
-
-
-let updated={...player};
-
-
-updated.level +=1;
-
-updated.xp +=100;
-
-updated.coins +=10;
 
 
 
@@ -114,23 +196,42 @@ updatePlayer(updated);
 
 
 
+setMessage(
+"❌ Game Failed -20 XP"
+);
+
+
+
+setStage("result");
+
+
+
+setTimeout(()=>{
+
+
 setCurrentGame(
 randomItem(games)
 );
 
 
-
-setCurrentQuestion(
-randomItem(questions)
-);
-
-
+setMessage("");
 
 setStage("game");
 
 
+},1200);
+
+
 
 }
+
+
+
+}
+
+
+
+
 
 
 
@@ -143,13 +244,61 @@ function answerQuestion(option){
 if(option===currentQuestion.answer){
 
 
-alert("Correct 🎉");
+
+let updated={...player};
 
 
-nextLevel();
+
+updated.level+=1;
+
+updated.xp+=100;
+
+updated.coins+=10;
+
+
+
+updatePlayer(updated);
+
+
+
+setMessage(
+"🏆 Level Up!"
+);
+
+
+
+setStage("result");
+
+
+
+setTimeout(()=>{
+
+
+setCurrentGame(
+randomItem(games)
+);
+
+
+
+setCurrentQuestion(
+getQuestion()
+);
+
+
+
+setMessage("");
+
+setStage("game");
+
+
+
+},1500);
+
 
 
 }
+
+
 
 else{
 
@@ -157,9 +306,13 @@ else{
 let updated={...player};
 
 
+
 updated.xp=Math.max(
+
 0,
+
 updated.xp-20
+
 );
 
 
@@ -168,13 +321,37 @@ updatePlayer(updated);
 
 
 
-alert("Wrong Answer ❌ XP -20");
+setMessage(
+"❌ Wrong Answer -20 XP"
+);
+
+
+
+setStage("result");
+
+
+
+setTimeout(()=>{
+
+
+setMessage("");
+
+setStage("question");
+
+
+},1200);
+
 
 
 }
 
 
+
 }
+
+
+
+
 
 
 
@@ -183,7 +360,7 @@ alert("Wrong Answer ❌ XP -20");
 function showGame(){
 
 
-const SelectedGame =
+const SelectedGame=
 GameRegistry[currentGame.id];
 
 
@@ -206,33 +383,14 @@ completeGame={completeGame}
 
 
 
-return(
-
-<div className="content">
-
-
-<h1>
-{currentGame.name}
-</h1>
-
-
-<button
-
-onClick={()=>completeGame(true)}
-
->
-
-Continue
-
-</button>
-
-
-</div>
-
-);
+return null;
 
 
 }
+
+
+
+
 
 
 
@@ -249,6 +407,7 @@ return(
 <h1>
 C CHALLENGE
 </h1>
+
 
 
 <h2>
@@ -291,6 +450,11 @@ onClick={()=>answerQuestion(option)}
 
 
 
+
+
+
+
+
 return(
 
 <>
@@ -318,24 +482,47 @@ XP : {player.xp}
 
 
 
+
+
 {
-
 stage==="game"
-
-?
-
+&&
 showGame()
+}
 
-:
 
+
+
+
+{
+stage==="question"
+&&
 showQuestion()
+}
+
+
+
+
+
+{
+stage==="result"
+&&
+
+<div className="content">
+
+<h1>
+{message}
+</h1>
+
+</div>
 
 }
 
 
 
-</>
 
+
+</>
 
 );
 

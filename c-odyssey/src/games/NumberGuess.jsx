@@ -4,16 +4,24 @@ import {useState} from "react";
 function NumberGuess({completeGame}){
 
 
-const [number] = useState(
+const [number]=useState(
 
-Math.floor(Math.random()*10)+1
+Math.floor(Math.random()*100)+1
 
 );
 
 
+
 const [guess,setGuess]=useState("");
 
-const [message,setMessage]=useState("");
+const [attempts,setAttempts]=useState(7);
+
+
+const [message,setMessage]=useState(
+"Guess the number"
+);
+
+
 
 
 
@@ -24,25 +32,87 @@ const value=Number(guess);
 
 
 
+if(!value)
+return;
+
+
+
+
 if(value===number){
 
 
-setMessage("Correct 🎉");
+setMessage(
+"🎉 Correct!"
+);
+
 
 
 setTimeout(()=>{
 
+
 completeGame(true);
+
 
 },1000);
 
 
+
+return;
+
+
 }
 
-else if(value>number){
 
 
-setMessage("Too High ⬆️");
+
+
+let remaining=attempts-1;
+
+
+setAttempts(remaining);
+
+
+
+
+
+if(remaining<=0){
+
+
+setMessage(
+
+`💀 Game Over! Number was ${number}`
+
+);
+
+
+
+setTimeout(()=>{
+
+
+completeGame(false);
+
+
+},1500);
+
+
+
+return;
+
+
+}
+
+
+
+
+
+if(value>number){
+
+
+setMessage(
+
+"⬇️ Too High! Try lower"
+
+);
 
 
 }
@@ -50,13 +120,26 @@ setMessage("Too High ⬆️");
 else{
 
 
-setMessage("Too Low ⬇️");
+setMessage(
+
+"⬆️ Too Low! Try higher"
+
+);
 
 
 }
 
 
+
+setGuess("");
+
+
+
 }
+
+
+
+
 
 
 
@@ -66,32 +149,45 @@ return(
 
 
 <h1>
-Number Guess
+NUMBER GUESS
 </h1>
 
 
-<p>
-Guess a number between 1-10
-</p>
+
+<h2>
+1 - 100
+</h2>
+
+
+<h3>
+Attempts Left: {attempts}
+</h3>
+
 
 
 <input
+
+type="number"
 
 value={guess}
 
 onChange={(e)=>setGuess(e.target.value)}
 
-type="number"
+placeholder="Enter guess"
 
 />
+
 
 
 <br/>
 
 
 <button onClick={check}>
-Guess
+
+GUESS
+
 </button>
+
 
 
 <h2>
