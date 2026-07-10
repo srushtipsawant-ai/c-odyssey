@@ -5,8 +5,8 @@ import Background from "./components/Background";
 import Intro from "./pages/Intro";
 import PlayerSetup from "./pages/PlayerSetup";
 import Dashboard from "./pages/Dashboard";
-
-import RockPaperScissors from "./games/RockPaperScissors";
+import CChallenge from "./pages/CChallenge";
+import GameManager from "./pages/GameManager";
 
 
 function App(){
@@ -25,13 +25,9 @@ return(
 
 <div className="content">
 
-<h1>
-C ODYSSEY
-</h1>
+<h1>C ODYSSEY</h1>
 
-<h2>
-Escape The Code Lab
-</h2>
+<h2>Escape The Code Lab</h2>
 
 <button
 onClick={()=>setScreen("intro")}
@@ -68,49 +64,28 @@ startGame={()=>setScreen("dashboard")}
 {screen==="dashboard" &&
 
 <Dashboard
-goToMap={()=>setScreen("game1")}
+goToMap={()=>setScreen("game")}
 />
 
 }
 
 
 
-{screen==="game1" &&
+{screen==="game" &&
 
-<RockPaperScissors
-completeGame={()=>setScreen("quiz1")}
+<GameManager
+completeGame={()=>setScreen("quiz")}
 />
 
 }
 
 
 
-{screen==="quiz1" &&
+{screen==="quiz" &&
 
-<div className="content">
-
-<h1>
-C CHALLENGE
-</h1>
-
-<h2>
-What keyword stores integer values?
-</h2>
-
-<button>
-int
-</button>
-
-<button>
-float
-</button>
-
-<button>
-char
-</button>
-
-
-</div>
+<CChallenge
+completeLevel={()=>setScreen("game")}
+/>
 
 }
 

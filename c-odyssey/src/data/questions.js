@@ -1,68 +1,62 @@
 const questions = [
-  {
-    id: 1,
-    level: 1,
-    question: "Which keyword is used to create an integer variable in C?",
-    options: [
-      "integer",
-      "int",
-      "number",
-      "var"
-    ],
-    answer: "int"
-  },
 
-  {
-    id: 2,
-    level: 1,
-    question: "Which symbol is used to end a statement in C?",
-    options: [
-      ".",
-      ":",
-      ";",
-      "#"
-    ],
-    answer: ";"
-  },
+{
+ id:1,
+ topic:"Variables",
+ question:"Which keyword is used to store integer values in C?",
+ options:["int","float","char","string"],
+ answer:"int"
+},
 
-  {
-    id: 3,
-    level: 1,
-    question: "What is the size of char data type in C?",
-    options: [
-      "1 byte",
-      "2 bytes",
-      "4 bytes",
-      "8 bytes"
-    ],
-    answer: "1 byte"
-  },
+{
+ id:2,
+ topic:"Data Types",
+ question:"Which data type stores decimal numbers?",
+ options:["int","float","char","void"],
+ answer:"float"
+},
 
-  {
-    id: 4,
-    level: 1,
-    question: "Which header file is needed for printf()?",
-    options: [
-      "stdio.h",
-      "math.h",
-      "string.h",
-      "stdlib.h"
-    ],
-    answer: "stdio.h"
-  },
+{
+ id:3,
+ topic:"Operators",
+ question:"Which symbol is used for addition?",
+ options:["-","+","*","/"],
+ answer:"+"
+},
 
-  {
-    id: 5,
-    level: 1,
-    question: "Which data type stores decimal values?",
-    options: [
-      "int",
-      "char",
-      "float",
-      "void"
-    ],
-    answer: "float"
-  }
+{
+ id:4,
+ topic:"Loops",
+ question:"Which loop executes at least once?",
+ options:["for","while","do-while","if"],
+ answer:"do-while"
+},
+
+{
+ id:5,
+ topic:"Output",
+ question:"Which function prints output in C?",
+ options:["scanf()","printf()","input()","print()"],
+ answer:"printf()"
+},
+
+{
+ id:6,
+ topic:"Arrays",
+ question:"Array indexing in C starts from?",
+ options:["0","1","-1","10"],
+ answer:"0"
+},
+
+{
+ id:7,
+ topic:"Pointers",
+ question:"Which symbol is used to access address?",
+ options:["&","*","#","@"],
+ answer:"&"
+}
+
 ];
+
 
 export default questions;
