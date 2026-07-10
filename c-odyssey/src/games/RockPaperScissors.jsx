@@ -1,108 +1,139 @@
-import { useState } from "react";
+import {useState} from "react";
 
 
-function RockPaperScissors({ completeGame }) {
-
-  const choices = ["🪨 Rock", "📄 Paper", "✂️ Scissors"];
-
-  const [player, setPlayer] = useState("");
-  const [computer, setComputer] = useState("");
-  const [result, setResult] = useState("");
+function RockPaperScissors({completeGame}){
 
 
-  function play(choice){
-
-    const computerChoice =
-      choices[Math.floor(Math.random()*3)];
-
-
-    setPlayer(choice);
-    setComputer(computerChoice);
+const choices=[
+"🪨 Rock",
+"📄 Paper",
+"✂️ Scissors"
+];
 
 
-    if(choice === computerChoice){
+const [result,setResult]=useState("");
 
-      setResult("Draw 😐");
-
-    }
-
-    else if(
-
-      (choice.includes("Rock") && computerChoice.includes("Scissors")) ||
-      (choice.includes("Paper") && computerChoice.includes("Rock")) ||
-      (choice.includes("Scissors") && computerChoice.includes("Paper"))
-
-    ){
-
-      setResult("You Win 🎉");
-
-      setTimeout(()=>{
-        completeGame();
-      },1000);
-
-    }
-
-    else{
-
-      setResult("Computer Wins 😭");
-
-    }
-
-  }
+const [computer,setComputer]=useState("");
 
 
 
-  return (
-
-    <div className="content">
-
-      <h1>
-        LEVEL 1
-      </h1>
+function play(player){
 
 
-      <h2>
-        Rock Paper Scissors
-      </h2>
+const cpu =
+choices[
+Math.floor(Math.random()*3)
+];
 
 
-      <p>
-        Beat the computer to unlock the C challenge!
-      </p>
+setComputer(cpu);
 
 
-      <div>
 
-      {
-        choices.map(choice=>(
+if(player===cpu){
 
-          <button
-          key={choice}
-          onClick={()=>play(choice)}
-          >
+setResult("Draw 😐 Try Again");
 
-          {choice}
+return;
 
-          </button>
-
-        ))
-      }
-
-      </div>
+}
 
 
-      <p>
-        You: {player}
-        <br/>
-        Computer: {computer}
-        <br/>
-        {result}
-      </p>
+
+const win =
+
+(player==="🪨 Rock" && cpu==="✂️ Scissors") ||
+
+(player==="📄 Paper" && cpu==="🪨 Rock") ||
+
+(player==="✂️ Scissors" && cpu==="📄 Paper");
 
 
-    </div>
 
-  );
+if(win){
+
+setResult("You Win 🎉");
+
+
+setTimeout(()=>{
+
+completeGame(true);
+
+},1200);
+
+
+}
+
+else{
+
+
+setResult("Computer Wins ❌");
+
+
+setTimeout(()=>{
+
+completeGame(false);
+
+},1200);
+
+
+}
+
+
+}
+
+
+
+
+return(
+
+<div className="content">
+
+
+<h1>
+ROCK PAPER SCISSORS
+</h1>
+
+
+<h2>
+Computer: {computer}
+</h2>
+
+
+<h2>
+{result}
+</h2>
+
+
+
+{
+
+choices.map(choice=>(
+
+
+<button
+
+key={choice}
+
+onClick={()=>play(choice)}
+
+>
+
+{choice}
+
+</button>
+
+
+))
+
+}
+
+
+
+</div>
+
+);
+
 
 }
 

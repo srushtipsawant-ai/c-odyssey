@@ -360,4 +360,54 @@ height:100%;
 
 background:linear-gradient(to right,#00e5ff,#7c3aed);
 
+} .board{
+
+display:grid;
+
+grid-template-columns:repeat(3,80px);
+
+gap:10px;
+
+justify-content:center;
+
+margin:30px;
+
+}
+
+
+.board button{
+
+width:80px;
+
+height:80px;
+
+font-size:35px;
+
+padding:0;
+
+}  .memory-grid{
+
+display:grid;
+
+grid-template-columns:repeat(4,80px);
+
+gap:15px;
+
+justify-content:center;
+
+margin-top:30px;
+
+}
+
+
+.memory-grid button{
+
+height:80px;
+
+width:80px;
+
+font-size:30px;
+
+padding:0;
+
 }

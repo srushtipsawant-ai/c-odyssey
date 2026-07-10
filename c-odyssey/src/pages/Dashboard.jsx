@@ -1,35 +1,39 @@
-function Dashboard({ goToMap }) {
-  const playerName = localStorage.getItem("playerName") || "Explorer";
+function Dashboard({goToMap}){
 
-  return (
-    <div className="content">
 
-      <h1>C ODYSSEY</h1>
+return(
 
-      <h2>Welcome, {playerName}</h2>
+<div className="content">
 
-      <div className="dashboard-card">
 
-        <p>🏆 Rank</p>
-        <h3>Code Rookie</h3>
+<h1>
+C ODYSSEY
+</h1>
 
-        <p>⭐ XP</p>
-        <div className="progress">
-          <div className="progress-fill"></div>
-        </div>
 
-        <p>🪙 Coins : 100</p>
+<h2>
+Level 1
+</h2>
 
-        <p>❤️ Lives : ❤️❤️❤️❤️❤️</p>
 
-      </div>
+<p>
+Complete the game and solve the C challenge.
+</p>
 
-      <button onClick={goToMap}>
-        OPEN MISSION MAP
-      </button>
 
-    </div>
-  );
+<button onClick={goToMap}>
+
+START LEVEL
+
+</button>
+
+
+</div>
+
+);
+
+
 }
+
 
 export default Dashboard;
