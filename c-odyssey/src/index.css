@@ -316,4 +316,48 @@ text-align:center;
 
 box-shadow:0 0 20px #00e5ff;
 
+}   .dashboard-card{
+
+margin:40px auto;
+
+width:420px;
+
+padding:30px;
+
+border-radius:20px;
+
+background:rgba(255,255,255,.05);
+
+border:1px solid rgba(0,229,255,.3);
+
+backdrop-filter:blur(10px);
+
+box-shadow:0 0 30px rgba(0,229,255,.2);
+
+}
+
+.progress{
+
+width:100%;
+
+height:18px;
+
+background:#1e293b;
+
+border-radius:20px;
+
+overflow:hidden;
+
+margin:15px 0 25px;
+
+}
+
+.progress-fill{
+
+width:0%;
+
+height:100%;
+
+background:linear-gradient(to right,#00e5ff,#7c3aed);
+
 }

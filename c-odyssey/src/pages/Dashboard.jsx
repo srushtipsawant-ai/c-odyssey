@@ -1,4 +1,4 @@
-function Dashboard({ goToLevels }) {
+function Dashboard({ goToMap }) {
   const playerName = localStorage.getItem("playerName") || "Explorer";
 
   return (
@@ -8,18 +8,24 @@ function Dashboard({ goToLevels }) {
 
       <h2>Welcome, {playerName}</h2>
 
-      <p>
-        🏆 Rank: Code Rookie
-        <br /><br />
-        ⭐ XP: 0 / 100
-        <br /><br />
-        🪙 Coins: 100
-        <br /><br />
-        ❤️ Lives: ❤️❤️❤️❤️❤️
-      </p>
+      <div className="dashboard-card">
 
-      <button onClick={goToLevels}>
-        LEVEL MAP
+        <p>🏆 Rank</p>
+        <h3>Code Rookie</h3>
+
+        <p>⭐ XP</p>
+        <div className="progress">
+          <div className="progress-fill"></div>
+        </div>
+
+        <p>🪙 Coins : 100</p>
+
+        <p>❤️ Lives : ❤️❤️❤️❤️❤️</p>
+
+      </div>
+
+      <button onClick={goToMap}>
+        OPEN MISSION MAP
       </button>
 
     </div>
