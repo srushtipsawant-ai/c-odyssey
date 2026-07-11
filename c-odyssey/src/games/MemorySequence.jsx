@@ -2,21 +2,26 @@ import {useState,useEffect} from "react";
 
 
 const colors=[
-"red",
-"blue",
-"green",
-"yellow"
+
+"#ff4b4b",
+"#4287f5",
+"#42d66b",
+"#ffd43b",
+"#a855f7",
+"#ff922b"
+
 ];
 
 
 
-function randomColor(){
+function randomNumber(){
 
-return colors[
-Math.floor(Math.random()*colors.length)
-];
+return Math.floor(
+Math.random()*9
+);
 
 }
+
 
 
 
@@ -24,25 +29,26 @@ Math.floor(Math.random()*colors.length)
 function MemorySequence({completeGame}){
 
 
+const [positions,setPositions]=useState([]);
+
 const [sequence,setSequence]=useState([]);
 
+const [flash,setFlash]=useState(-1);
 
-const [playerInput,setPlayerInput]=useState([]);
+const [watching,setWatching]=useState(true);
 
-
-const [showing,setShowing]=useState(false);
-
-
-const [active,setActive]=useState("");
-
-
+const [playerStep,setPlayerStep]=useState(0);
 
 const [round,setRound]=useState(1);
 
+const [message,setMessage]=useState("");
 
-const [message,setMessage]=useState(
-"Get ready..."
-);
+const [clicked,setClicked]=useState(-1);
+
+const [correctFlash,setCorrectFlash]=useState(-1);
+
+const [wrongFlash,setWrongFlash]=useState(-1);
+
 
 
 
@@ -51,7 +57,7 @@ const [message,setMessage]=useState(
 
 useEffect(()=>{
 
-startRound();
+startGame();
 
 },[]);
 
@@ -61,39 +67,32 @@ startRound();
 
 
 
-function startRound(){
+function startGame(){
 
 
-let newSequence=[];
+let board=[];
 
 
+while(board.length<2){
 
-for(let i=0;i<round+1;i++){
 
-newSequence.push(
-randomColor()
-);
+let n=randomNumber();
+
+
+if(!board.includes(n))
+
+board.push(n);
+
 
 }
 
 
 
-setSequence(newSequence);
+setPositions(board);
 
+setSequence(board);
 
-setPlayerInput([]);
-
-
-setShowing(true);
-
-
-setMessage(
-"Remember the sequence 👀"
-);
-
-
-
-showSequence(newSequence);
+showPattern(board);
 
 
 
@@ -105,37 +104,29 @@ showSequence(newSequence);
 
 
 
-function showSequence(seq){
+
+function showPattern(pattern){
 
 
+setWatching(true);
 
-let index=0;
+
+let i=0;
 
 
 
 let timer=setInterval(()=>{
 
 
-setActive(
-seq[index]
-);
+setFlash(pattern[i]);
 
 
 
-setTimeout(()=>{
-
-setActive("");
-
-},500);
+i++;
 
 
 
-index++;
-
-
-
-if(index>=seq.length){
-
+if(i>=pattern.length){
 
 
 clearInterval(timer);
@@ -145,21 +136,19 @@ clearInterval(timer);
 setTimeout(()=>{
 
 
-setShowing(false);
+setFlash(-1);
+
+setWatching(false);
+
+setPlayerStep(0);
 
 
-setMessage(
-"Repeat the sequence 🧠"
-);
 
-
-
-},700);
+},500);
 
 
 
 }
-
 
 
 },900);
@@ -176,60 +165,109 @@ setMessage(
 
 
 
-function clickColor(color){
+function nextRound(){
 
 
 
-if(showing)
-return;
+let newPosition;
+
+
+
+do{
+
+newPosition=randomNumber();
+
+
+}
+
+while(
+
+positions.includes(newPosition)
+
+);
 
 
 
 
-let updated=[
+let newBoard=[
 
-...playerInput,
+...positions,
 
-color
+newPosition
 
 ];
 
 
 
-setPlayerInput(updated);
+setPositions(newBoard);
+
+setSequence(newBoard);
+
+
+setRound(round+1);
+
+
+showPattern(newBoard);
+
+
+
+}
 
 
 
 
-let currentIndex=
-updated.length-1;
 
 
 
 
-if(
-updated[currentIndex]
-!==
 
-sequence[currentIndex]
-
-){
+function clickCircle(index){
 
 
 
-setMessage(
-`❌ Wrong! Score: Round ${round}`
-);
+if(watching)
 
+return;
+
+
+
+
+
+// click animation
+
+setClicked(index);
 
 
 setTimeout(()=>{
 
+setClicked(-1);
+
+},200);
+
+
+
+
+
+
+if(index!==sequence[playerStep]){
+
+
+
+setWrongFlash(index);
+
+
+
+setMessage("❌ Wrong Pattern");
+
+
+setTimeout(()=>{
+
+setWrongFlash(-1);
 
 completeGame(false);
 
 
-},1500);
+},700);
 
 
 
@@ -241,34 +279,60 @@ return;
 
 
 
-if(updated.length===sequence.length){
+
+
+// correct feedback
+
+setCorrectFlash(index);
+
+
+setTimeout(()=>{
+
+setCorrectFlash(-1);
+
+},300);
 
 
 
-setMessage(
-"🎉 Correct! Next Round"
-);
+
+
+let next=playerStep+1;
+
+
+
+setPlayerStep(next);
+
+
+
+
+
+
+if(next===sequence.length){
+
+
+
+setMessage("✅ Correct!");
 
 
 
 setTimeout(()=>{
 
 
-setRound(round+1);
+setMessage("");
+
+nextRound();
 
 
-startRound();
+},900);
 
 
-},1200);
+
+}
 
 
 
 }
 
-
-
-}
 
 
 
@@ -279,25 +343,41 @@ startRound();
 
 return(
 
-
 <div className="content">
 
 
 <h1>
-COLOR FLASH MEMORY
+🧠 Memory Sequence
 </h1>
 
 
 
 <h2>
-Round: {round}
+Round {round}
 </h2>
 
 
 
-<h2>
-{message}
-</h2>
+<h3>
+
+{
+
+watching
+
+?
+
+"👀 Watch the flashes"
+
+:
+
+"👇 Repeat the pattern"
+
+}
+
+</h3>
+
+
+
 
 
 
@@ -307,73 +387,149 @@ style={{
 
 display:"grid",
 
-gridTemplateColumns:"repeat(2,120px)",
+gridTemplateColumns:"repeat(3,90px)",
 
-gap:"20px",
+gap:"25px",
 
-justifyContent:"center",
-
-marginTop:"30px"
+justifyContent:"center"
 
 }}
 
 >
+
 
 
 {
 
-colors.map(color=>(
+Array.from({length:9}).map((_,index)=>(
 
 
-<button
 
-key={color}
+<div
 
-onClick={()=>clickColor(color)}
+key={index}
+
+onClick={()=>clickCircle(index)}
+
 
 style={{
 
-width:"120px",
+width:"90px",
 
-height:"120px",
+height:"90px",
+
+borderRadius:"50%",
+
+
 
 background:
 
-active===color
+
+flash===index
 
 ?
 
-"white"
+colors[index%colors.length]
 
 :
 
-color,
+correctFlash===index
 
-borderRadius:"20px",
+?
 
-border:"3px solid black",
+"#42d66b"
 
-cursor:"pointer"
+
+:
+
+wrongFlash===index
+
+?
+
+"#ff0000"
+
+
+:
+
+"#444",
+
+
+
+
+border:"3px solid white",
+
+
+
+cursor:
+
+watching
+
+?
+
+"default"
+
+:
+
+"pointer",
+
+
+
+
+transform:
+
+clicked===index
+
+?
+
+"scale(1.15)"
+
+:
+
+"scale(1)",
+
+
+
+boxShadow:
+
+clicked===index
+
+?
+
+"0 0 25px white"
+
+:
+
+"none",
+
+
+
+transition:"0.2s"
 
 }}
 
 
->
+/>
 
-</button>
 
 
 ))
 
-
 }
 
 
-</div>
-
 
 </div>
 
+
+
+
+<h2>
+{message}
+</h2>
+
+
+
+</div>
 
 );
 
