@@ -1,17 +1,31 @@
 import { useState } from "react";
 
+import {getPlayer,savePlayer} from "../engine/player";
+
 function PlayerSetup({ startGame }) {
 
   const [playerName, setPlayerName] = useState("");
 
   function handleStart() {
 
-    if (playerName.trim() === "") {
+    if(playerName.trim()===""){
+
       alert("Please enter your name.");
+
       return;
+
     }
 
-    localStorage.setItem("playerName", playerName);
+    let player=getPlayer();
+
+    player.name=playerName.trim();
+
+    savePlayer(player);
+
+localStorage.setItem(
+"playerName",
+playerName.trim()
+);
 
     startGame();
 
@@ -24,20 +38,33 @@ function PlayerSetup({ startGame }) {
       <h1>Create Player</h1>
 
       <p>
+
         Enter your explorer name
+
       </p>
 
       <input
+
         type="text"
+
         placeholder="Your Name"
+
         value={playerName}
+
         onChange={(e)=>setPlayerName(e.target.value)}
+
       />
 
-      <br />
+      <br/><br/>
 
-      <button onClick={handleStart}>
+      <button
+
+        onClick={handleStart}
+
+      >
+
         BEGIN ADVENTURE
+
       </button>
 
     </div>

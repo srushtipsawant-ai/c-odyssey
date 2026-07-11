@@ -32,94 +32,65 @@ return [...arr].sort(
 
 
 
-
-
 function getQuestion(){
 
+let pool=JSON.parse(
 
-let used=JSON.parse(
-
-localStorage.getItem("usedQuestions")
-
-)||[];
-
-
-
-
-let available=questions.filter(
-
-q=>!used.includes(q.id)
+localStorage.getItem("questionPool")
 
 );
 
 
 
+if(!pool || pool.length===0){
 
-if(available.length===0){
+pool=shuffleArray(
 
+questions.map(q=>q.id)
 
-localStorage.removeItem("usedQuestions");
-
-
-used=[];
-
-
-available=[...questions];
-
-
-}
-
-
-
-
-
-let selected=randomItem(available);
-
-
-
-// shuffle options here
-let shuffledQuestion={
-
-...selected,
-
-options:shuffleArray(selected.options)
-
-};
-
-
-
-
+);
 
 localStorage.setItem(
 
-"usedQuestions",
+"questionPool",
 
-JSON.stringify(
-
-[
-
-...used,
-
-selected.id
-
-]
-
-)
+JSON.stringify(pool)
 
 );
-
-
-
-
-return shuffledQuestion;
-
-
 
 }
 
 
 
+let id=pool.shift();
 
+localStorage.setItem(
+
+"questionPool",
+
+JSON.stringify(pool)
+
+);
+
+
+
+let q=questions.find(
+
+x=>x.id===id
+
+);
+
+
+
+return{
+
+...q,
+
+options:shuffleArray(q.options)
+
+};
+
+}
 
 
 
@@ -129,26 +100,34 @@ function GameEngine(){
 
 
 
-const [player,setPlayer]=useState(
-getPlayer()
-);
+const [player,setPlayer]=useState(getPlayer());
+const playerName =
+JSON.parse(
+localStorage.getItem("cOdysseyPlayer")
+)?.name || "Player";
 
 
 
 const [stage,setStage]=useState(
+
 "game"
+
 );
 
 
 
 const [game,setGame]=useState(
+
 randomItem(games)
+
 );
 
 
 
 const [question,setQuestion]=useState(
+
 getQuestion()
+
 );
 
 
@@ -158,10 +137,6 @@ const [message,setMessage]=useState("");
 
 
 const [showLesson,setShowLesson]=useState(false);
-
-
-
-
 
 
 
@@ -180,26 +155,17 @@ savePlayer(data);
 
 
 
-
-
-
 function completeGame(result){
-
-
 
 if(result){
 
-
 setStage("question");
-
 
 }
 
 else{
 
-
 let updated={...player};
-
 
 updated.xp=Math.max(
 
@@ -209,21 +175,13 @@ updated.xp-20
 
 );
 
-
 updatePlayer(updated);
-
 
 setStage("question");
 
-
 }
 
-
-
 }
-
-
-
 
 
 
@@ -232,16 +190,11 @@ setStage("question");
 
 function answerQuestion(option){
 
-
-
 let updated={...player};
 
 
 
-
 if(option===question.answer){
-
-
 
 updated.level+=1;
 
@@ -249,21 +202,11 @@ updated.xp+=100;
 
 updated.coins+=10;
 
-
-
-setMessage(
-
-"🟢 Correct Answer!"
-
-);
-
-
+setMessage("🟢 Correct Answer!");
 
 }
 
 else{
-
-
 
 updated.xp=Math.max(
 
@@ -273,34 +216,17 @@ updated.xp-20
 
 );
 
-
-
-setMessage(
-
-"🔴 Wrong Answer!"
-
-);
-
-
+setMessage("🔴 Wrong Answer!");
 
 }
-
 
 
 
 updatePlayer(updated);
 
-
-
 setStage("result");
 
-
-
 }
-
-
-
-
 
 
 
@@ -310,15 +236,11 @@ setStage("result");
 
 function continueNext(){
 
-
-
 setQuestion(
 
 getQuestion()
 
 );
-
-
 
 setGame(
 
@@ -326,23 +248,13 @@ randomItem(games)
 
 );
 
-
-
 setShowLesson(false);
-
-
 
 setMessage("");
 
-
-
 setStage("game");
 
-
-
 }
-
-
 
 
 
@@ -352,24 +264,17 @@ setStage("game");
 
 function showGame(){
 
-
-
 const SelectedGame=
 
 GameRegistry[game.id];
 
 
 
-
 if(!SelectedGame){
-
 
 return null;
 
-
 }
-
-
 
 
 
@@ -383,11 +288,7 @@ completeGame={completeGame}
 
 );
 
-
-
 }
-
-
 
 
 
@@ -397,17 +298,12 @@ completeGame={completeGame}
 
 function showQuestion(){
 
-
-
 return(
 
 <div className="content">
 
-
 <h1>
-
 C CHALLENGE
-
 </h1>
 
 
@@ -418,14 +314,9 @@ C CHALLENGE
 
 </h2>
 
-
-
-
-
 {
 
 question.options.map(option=>(
-
 
 <button
 
@@ -439,39 +330,20 @@ onClick={()=>answerQuestion(option)}
 
 </button>
 
-
 ))
 
 }
-
-
 
 </div>
 
 );
 
-
-
 }
-
-
-
-
-
-
-
-
-
-
-
 function showResult(){
-
-
 
 return(
 
 <div className="content">
-
 
 <h1>
 
@@ -481,27 +353,49 @@ return(
 
 
 
+{
+
+message==="🟢 Correct Answer!"
+
+?
+
+<h2 style={{color:"#4CAF50"}}>
+
+🎉 Great job!
+
+</h2>
+
+:
+
+<h2 style={{color:"#ff4d4d"}}>
+
+❌ Better luck next time!
+
+</h2>
+
+}
+
 
 
 <h2>
 
 Correct Answer:
 
-{question.answer}
-
 </h2>
 
+<h3>
 
+{question.answer}
+
+</h3>
 
 
 
 <h3>
 
-📚 Explanation:
+📚 Explanation
 
 </h3>
-
-
 
 <p>
 
@@ -511,14 +405,9 @@ Correct Answer:
 
 
 
-
-
-
-
 {
 
 !showLesson &&
-
 
 <button
 
@@ -526,7 +415,7 @@ onClick={()=>setShowLesson(true)}
 
 >
 
-📚 Learn this topic
+📖 Learn this Topic
 
 </button>
 
@@ -534,31 +423,41 @@ onClick={()=>setShowLesson(true)}
 
 
 
-
-
 {
 
 showLesson &&
 
+<div
 
-<div>
+style={{
 
+marginTop:"20px",
 
+padding:"15px",
+
+border:"2px solid #ffffff33",
+
+borderRadius:"10px",
+
+background:"#111"
+
+}}
+
+>
 
 <h2>
 
-{question.topic}
+📚 {question.topic}
 
 </h2>
-
-
-
 
 <p
 
 style={{
 
-whiteSpace:"pre-line"
+whiteSpace:"pre-line",
+
+textAlign:"left"
 
 }}
 
@@ -567,9 +466,6 @@ whiteSpace:"pre-line"
 {question.lesson}
 
 </p>
-
-
-
 
 <button
 
@@ -581,25 +477,15 @@ onClick={()=>setShowLesson(false)}
 
 </button>
 
-
-
 </div>
 
-
 }
-
-
-
-
-
-
 
 
 
 {
 
 !showLesson &&
-
 
 <button
 
@@ -611,25 +497,13 @@ Continue 🎮
 
 </button>
 
-
 }
-
-
-
-
 
 </div>
 
-
 );
 
-
-
 }
-
-
-
-
 
 
 
@@ -637,96 +511,69 @@ Continue 🎮
 
 return(
 
+
 <>
 
+<div
+style={{
+position:"fixed",
+left:"20px",
+top:"20px",
+width:"200px",
+padding:"15px",
+background:"#111",
+border:"2px solid #ffffff33",
+borderRadius:"15px",
+zIndex:1000,
+textAlign:"left"
+}}
+>
 
-<div className="content">
+<h3>
+👤 {
+JSON.parse(localStorage.getItem("cOdysseyPlayer"))?.name || "Player"
+}
+</h3>
 
+<p>
+⭐ Level: {player.level}
+</p>
 
-<h2>
+<p>
+✨ XP: {player.xp}
+</p>
 
-⭐ Level {player.level}
-
-</h2>
-
-
-
-<h2>
-
-XP: {player.xp}
-
-</h2>
-
-
-
-<h2>
-
+<p>
 🪙 Coins: {player.coins}
-
-</h2>
-
-
+</p>
 
 </div>
 
 
-
-
-
-
-
 {
-
 stage==="game"
-
 &&
-
 showGame()
-
 }
 
 
-
-
-
-
-
 {
-
 stage==="question"
-
 &&
-
 showQuestion()
-
 }
-
-
-
-
-
 
 
 {
-
 stage==="result"
-
 &&
-
 showResult()
-
 }
-
-
-
 
 
 </>
 
-
 );
-
-
 
 }
 

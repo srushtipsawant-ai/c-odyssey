@@ -1,20 +1,36 @@
-const defaultPlayer = {
+const PLAYER_KEY="cOdysseyPlayer";
 
-    level:1,
 
-    xp:0,
+const defaultPlayer={
 
-    coins:0
+name:"Player",
+
+level:1,
+
+xp:0,
+
+coins:0,
+
+
+gamesPlayed:0,
+
+gamesWon:0,
+
+
+bestScores:{}
 
 };
+
+
 
 
 
 export function getPlayer(){
 
 
-const saved =
-localStorage.getItem("player");
+let saved=localStorage.getItem(
+PLAYER_KEY
+);
 
 
 
@@ -27,8 +43,11 @@ return JSON.parse(saved);
 
 
 localStorage.setItem(
-"player",
+
+PLAYER_KEY,
+
 JSON.stringify(defaultPlayer)
+
 );
 
 
@@ -36,7 +55,12 @@ JSON.stringify(defaultPlayer)
 return defaultPlayer;
 
 
+
 }
+
+
+
+
 
 
 
@@ -45,7 +69,7 @@ export function savePlayer(player){
 
 localStorage.setItem(
 
-"player",
+PLAYER_KEY,
 
 JSON.stringify(player)
 
@@ -56,20 +80,16 @@ JSON.stringify(player)
 
 
 
+
+
+
+
 export function resetPlayer(){
 
 
-localStorage.setItem(
-
-"player",
-
-JSON.stringify(defaultPlayer)
-
+localStorage.removeItem(
+PLAYER_KEY
 );
-
-
-
-return defaultPlayer;
 
 
 }
