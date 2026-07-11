@@ -51,6 +51,24 @@ name:"Memory Sequence",
 difficulty:"Medium"
 },
 
+{
+id:"pattern",
+name:"Pattern Memory",
+difficulty:"Medium"
+},
+
+
+
+
+
+{
+id:"mastermind",
+name:"Mastermind",
+difficulty:"Hard"
+},
+
+
+
 
 
 

@@ -1,81 +1,57 @@
 import {useState,useEffect} from "react";
 
 
-function MemorySequence({completeGame}){
-
-
 const colors=[
-
-"🔴",
-"🔵",
-"🟢",
-"🟡"
-
+"red",
+"blue",
+"green",
+"yellow"
 ];
 
 
 
-const [sequence]=useState(()=>{
+function randomColor(){
 
-
-let arr=[];
-
-
-for(let i=0;i<4;i++){
-
-
-arr.push(
-
-colors[
+return colors[
 Math.floor(Math.random()*colors.length)
-]
-
-);
-
+];
 
 }
 
 
-return arr;
 
 
-});
+function MemorySequence({completeGame}){
+
+
+const [sequence,setSequence]=useState([]);
+
+
+const [playerInput,setPlayerInput]=useState([]);
+
+
+const [showing,setShowing]=useState(false);
+
+
+const [active,setActive]=useState("");
 
 
 
-const [show,setShow]=useState(true);
-
-
-const [index,setIndex]=useState(0);
+const [round,setRound]=useState(1);
 
 
 const [message,setMessage]=useState(
-"Remember!"
+"Get ready..."
 );
+
+
+
 
 
 
 useEffect(()=>{
 
-
-const timer=setTimeout(()=>{
-
-
-setShow(false);
-
-
-setMessage(
-"Repeat the sequence"
-);
-
-
-},2000);
-
-
-
-return()=>clearTimeout(timer);
-
-
+startRound();
 
 },[]);
 
@@ -85,16 +61,166 @@ return()=>clearTimeout(timer);
 
 
 
-function press(color){
+function startRound(){
+
+
+let newSequence=[];
 
 
 
-if(color!==sequence[index]){
+for(let i=0;i<round+1;i++){
+
+newSequence.push(
+randomColor()
+);
+
+}
+
+
+
+setSequence(newSequence);
+
+
+setPlayerInput([]);
+
+
+setShowing(true);
 
 
 setMessage(
-"Wrong ❌"
+"Remember the sequence 👀"
 );
+
+
+
+showSequence(newSequence);
+
+
+
+}
+
+
+
+
+
+
+
+function showSequence(seq){
+
+
+
+let index=0;
+
+
+
+let timer=setInterval(()=>{
+
+
+setActive(
+seq[index]
+);
+
+
+
+setTimeout(()=>{
+
+setActive("");
+
+},500);
+
+
+
+index++;
+
+
+
+if(index>=seq.length){
+
+
+
+clearInterval(timer);
+
+
+
+setTimeout(()=>{
+
+
+setShowing(false);
+
+
+setMessage(
+"Repeat the sequence 🧠"
+);
+
+
+
+},700);
+
+
+
+}
+
+
+
+},900);
+
+
+
+}
+
+
+
+
+
+
+
+
+
+function clickColor(color){
+
+
+
+if(showing)
+return;
+
+
+
+
+let updated=[
+
+...playerInput,
+
+color
+
+];
+
+
+
+setPlayerInput(updated);
+
+
+
+
+let currentIndex=
+updated.length-1;
+
+
+
+
+if(
+updated[currentIndex]
+!==
+
+sequence[currentIndex]
+
+){
+
+
+
+setMessage(
+`❌ Wrong! Score: Round ${round}`
+);
+
 
 
 setTimeout(()=>{
@@ -103,7 +229,8 @@ setTimeout(()=>{
 completeGame(false);
 
 
-},1000);
+},1500);
+
 
 
 return;
@@ -114,29 +241,27 @@ return;
 
 
 
-if(index===sequence.length-1){
+if(updated.length===sequence.length){
+
 
 
 setMessage(
-"Correct 🎉"
+"🎉 Correct! Next Round"
 );
+
 
 
 setTimeout(()=>{
 
 
-completeGame(true);
+setRound(round+1);
 
 
-},1000);
+startRound();
 
 
-}
+},1200);
 
-else{
-
-
-setIndex(index+1);
 
 
 }
@@ -144,6 +269,9 @@ setIndex(index+1);
 
 
 }
+
+
+
 
 
 
@@ -151,12 +279,19 @@ setIndex(index+1);
 
 return(
 
+
 <div className="content">
 
 
 <h1>
-MEMORY SEQUENCE
+COLOR FLASH MEMORY
 </h1>
+
+
+
+<h2>
+Round: {round}
+</h2>
 
 
 
@@ -166,83 +301,85 @@ MEMORY SEQUENCE
 
 
 
-{
-
-show
-
-?
-
-<h1
+<div
 
 style={{
 
-fontSize:"55px",
+display:"grid",
 
-letterSpacing:"15px"
+gridTemplateColumns:"repeat(2,120px)",
+
+gap:"20px",
+
+justifyContent:"center",
+
+marginTop:"30px"
 
 }}
 
 >
 
-{sequence.join(" ")}
-
-</h1>
-
-
-:
-
-<div>
-
-
-<h2>
-Step {index+1}/4
-</h2>
-
 
 {
 
-colors.map(c=>(
+colors.map(color=>(
 
 
 <button
 
-key={c}
+key={color}
+
+onClick={()=>clickColor(color)}
 
 style={{
 
-fontSize:"30px",
+width:"120px",
 
-margin:"10px"
+height:"120px",
+
+background:
+
+active===color
+
+?
+
+"white"
+
+:
+
+color,
+
+borderRadius:"20px",
+
+border:"3px solid black",
+
+cursor:"pointer"
 
 }}
 
-onClick={()=>press(c)}
 
 >
-
-{c}
 
 </button>
 
 
 ))
 
+
 }
 
 
 </div>
 
 
-}
-
-
-
 </div>
+
 
 );
 
 
 }
+
 
 
 export default MemorySequence;

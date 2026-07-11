@@ -9,6 +9,11 @@ import ReactionTimer from "./ReactionTimer";
 import NumberTap from "./NumberTap";
 import ColorMatch from "./ColorMatch";
 import MemorySequence from "./MemorySequence";
+import PatternMemory from "./PatternMemory";
+
+
+import Mastermind from "./Mastermind";
+
 
 
 
@@ -32,7 +37,17 @@ numbertap: NumberTap,
 
 colormatch: ColorMatch,
 
-sequence: MemorySequence
+sequence: MemorySequence,
+
+pattern:PatternMemory,
+
+
+
+
+
+mastermind:Mastermind,
+
+
 
 
 };

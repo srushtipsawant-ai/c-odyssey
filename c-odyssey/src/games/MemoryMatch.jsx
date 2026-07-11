@@ -1,182 +1,268 @@
-import { useState } from "react";
+import {useState,useEffect} from "react";
 
 
 function MemoryMatch({completeGame}){
 
 
-const createCards = () => {
+const values=[
 
-
-const values = [
-
-"💻",
-"🐛",
-"⚡",
-"🔥",
-"💻",
-"🐛",
-"⚡",
-"🔥"
+"A","A",
+"B","B",
+"C","C",
+"D","D",
+"E","E",
+"F","F"
 
 ];
 
 
 
-return values
+const shuffle=(arr)=>{
 
-.sort(()=>Math.random()-0.5)
-
-.map((value,index)=>(
-
-{
-id:index,
-value:value,
-flipped:false,
-matched:false
-}
-
-));
-
+return [...arr].sort(
+()=>Math.random()-0.5
+);
 
 };
 
 
 
-const [cards,setCards]=useState(
-createCards()
+const [cards,setCards]=useState(()=>
+
+
+shuffle(values).map((value,index)=>({
+
+id:index,
+
+value,
+
+flipped:true,
+
+matched:false
+
+
+}))
+
+
 );
 
 
-const [selected,setSelected]=useState([]);
 
+const [preview,setPreview]=useState(true);
+
+
+const [first,setFirst]=useState(null);
+
+const [second,setSecond]=useState(null);
 
 const [lock,setLock]=useState(false);
 
 
-const [message,setMessage]=useState(
-"Find all matching pairs"
+
+
+
+useEffect(()=>{
+
+
+let timer=setTimeout(()=>{
+
+
+setCards(prev=>
+
+prev.map(card=>({
+
+...card,
+
+flipped:false
+
+}))
+
 );
 
 
-
-function flipCard(card){
-
+setPreview(false);
 
 
-if(
+},2000);
 
-lock ||
 
-card.flipped ||
 
-card.matched
+return()=>clearTimeout(timer);
 
-)
 
+
+},[]);
+
+
+
+
+
+
+
+
+function clickCard(index){
+
+
+if(lock)
+return;
+
+
+if(preview)
 return;
 
 
 
-const updatedCards = cards.map(c=>
-
-
-c.id===card.id
-
-?
-
-{...c,flipped:true}
-
-:
-
-c
-
-
-);
+if(cards[index].flipped)
+return;
 
 
 
-setCards(updatedCards);
+let updated=[...cards];
+
+
+updated[index].flipped=true;
+
+
+setCards(updated);
 
 
 
-const newSelected=[...selected,card];
+if(first===null){
 
 
-setSelected(newSelected);
-
-
-
-if(newSelected.length===2){
-
-
-checkMatch(updatedCards,newSelected);
+setFirst(index);
 
 
 }
 
-
-}
-
+else{
 
 
-
-function checkMatch(updated,picked){
+setSecond(index);
 
 
 setLock(true);
 
 
 
-const first=picked[0];
+if(
 
-const second=picked[1];
+cards[first].value === cards[index].value
 
-
-
-if(first.value===second.value){
+){
 
 
+setTimeout(()=>{
 
-const matchedCards = updated.map(card=>
 
+setCards(prev=>
 
-card.value===first.value
+prev.map((card,i)=>
+
+i===first || i===index
 
 ?
 
-{...card,matched:true}
+{
+
+...card,
+
+matched:true
+
+}
 
 :
 
 card
 
+)
 
 );
 
 
+setFirst(null);
 
-setCards(matchedCards);
-
-
-setSelected([]);
-
+setSecond(null);
 
 setLock(false);
 
 
 
-const completed = matchedCards.every(
+},700);
 
-card=>card.matched
+
+
+}
+
+else{
+
+
+setTimeout(()=>{
+
+
+setCards(prev=>
+
+prev.map((card,i)=>
+
+i===first || i===index
+
+?
+
+{
+
+...card,
+
+flipped:false
+
+}
+
+:
+
+card
+
+)
 
 );
 
 
 
-if(completed){
+setFirst(null);
+
+setSecond(null);
+
+setLock(false);
 
 
-setMessage("Memory Master 🎉");
+
+},1000);
+
+
+
+}
+
+
+
+}
+
+
+
+}
+
+
+
+
+
+
+useEffect(()=>{
+
+
+if(
+
+cards.length &&
+
+cards.every(card=>card.matched)
+
+){
 
 
 setTimeout(()=>{
@@ -185,65 +271,18 @@ setTimeout(()=>{
 completeGame(true);
 
 
-},1200);
+},800);
 
 
 }
 
 
-}
-
-
-else{
-
-
-setMessage("Wrong pair ❌");
+},[cards]);
 
 
 
-setTimeout(()=>{
 
 
-const reset = updated.map(card=>
-
-
-card.id===first.id ||
-
-card.id===second.id
-
-?
-
-{...card,flipped:false}
-
-:
-
-card
-
-
-);
-
-
-
-setCards(reset);
-
-
-setSelected([]);
-
-
-setLock(false);
-
-
-setMessage("Find all matching pairs");
-
-
-},900);
-
-
-
-}
-
-
-}
 
 
 
@@ -259,9 +298,21 @@ MEMORY MATCH
 </h1>
 
 
-
 <h2>
-{message}
+
+{
+preview
+
+?
+
+"Remember the cards 👀"
+
+:
+
+"Find all pairs 🧠"
+
+}
+
 </h2>
 
 
@@ -276,9 +327,7 @@ gridTemplateColumns:"repeat(4,80px)",
 
 gap:"15px",
 
-justifyContent:"center",
-
-marginTop:"30px"
+justifyContent:"center"
 
 }}
 
@@ -287,26 +336,24 @@ marginTop:"30px"
 
 {
 
-cards.map(card=>(
+cards.map((card,index)=>(
 
 
 <button
 
 key={card.id}
 
-onClick={()=>flipCard(card)}
+onClick={()=>clickCard(index)}
 
 style={{
 
-height:"80px",
-
 width:"80px",
 
-fontSize:"35px",
+height:"80px",
 
-borderRadius:"15px",
+fontSize:"30px",
 
-cursor:"pointer",
+borderRadius:"10px",
 
 background:
 
@@ -314,27 +361,13 @@ card.flipped || card.matched
 
 ?
 
-"#111827"
+"#4caf50"
 
 :
 
-"#050816",
+"#333",
 
-color:"#00e5ff",
-
-border:"2px solid #00e5ff",
-
-boxShadow:
-
-card.matched
-
-?
-
-"0 0 20px #00e5ff"
-
-:
-
-"0 0 10px #7c3aed"
+color:"white"
 
 }}
 
@@ -363,7 +396,6 @@ card.value
 
 
 }
-
 
 
 </div>
